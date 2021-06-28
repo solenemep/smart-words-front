@@ -1,14 +1,14 @@
 import { DappContextProvider } from "./context/DappContext"
-import { NFTokenContextProvider } from "./context/NFTokenContext"
+import { PublicationContextProvider } from "./context/PublicationContext"
 import Dapp from "./Dapp"
 
 const App = () => {
   return (
-    <NFTokenContextProvider>
+    <PublicationContextProvider>
       <DappContextProvider>
         <Dapp />
       </DappContextProvider>
-    </NFTokenContextProvider>
+    </PublicationContextProvider>
   )
 }
 
