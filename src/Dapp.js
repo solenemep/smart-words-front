@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import Archive from "./Archive"
+import Read from "./Read"
 import Footer from "./Footer"
 import Home from "./Home"
 import Nav from "./Nav"
@@ -19,8 +19,8 @@ const Dapp = () => {
           <Route exact path="/write">
             <Write />
           </Route>
-          <Route exact path="/archive">
-            <Archive />
+          <Route exact path="/read">
+            <Read />
           </Route>
           <Route exact path="/transact">
             <Transact />

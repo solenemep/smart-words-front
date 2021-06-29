@@ -29,35 +29,44 @@ const Nav = () => {
     <Box px={4}>
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <HStack as={"nav"} spacing={8}>
-          <Link as={Button} size={"md"} href={"/"} aria-label={"home page"}>
+          <Button
+            as={Link}
+            size={"md"}
+            href={"/"}
+            aria-label={"home page"}
+            _hover={{ textDecoration: "none" }}
+          >
             Home
-          </Link>
+          </Button>
           {web3State.isLogged && web3State.chainId === 42 ? (
             <Fragment>
-              <Link
-                as={Button}
+              <Button
+                as={Link}
                 size={"md"}
                 href={"/write"}
                 aria-label={"write page"}
+                _hover={{ textDecoration: "none" }}
               >
                 Write
-              </Link>
-              <Link
-                as={Button}
+              </Button>
+              <Button
+                as={Link}
                 size={"md"}
-                href={"/archive"}
+                href={"/read"}
                 aria-label={"archive page"}
+                _hover={{ textDecoration: "none" }}
               >
-                Archive
-              </Link>
-              <Link
-                as={Button}
+                Read
+              </Button>
+              <Button
+                as={Link}
                 size={"md"}
                 href={"/transact"}
                 aria-label={"transact page"}
+                _hover={{ textDecoration: "none" }}
               >
                 Transact
-              </Link>
+              </Button>
             </Fragment>
           ) : (
             <Spacer />

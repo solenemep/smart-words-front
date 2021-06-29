@@ -1,4 +1,4 @@
-import { Box, Flex, Badge, Text, VStack } from "@chakra-ui/react"
+import { Box, Flex, Badge } from "@chakra-ui/react"
 import { publicationAddress } from "./contract/Publication"
 
 const Footer = () => {
