@@ -4,8 +4,8 @@ import Read from "./Read"
 import Footer from "./Footer"
 import Home from "./Home"
 import Nav from "./Nav"
-import Transact from "./Transact"
 import Write from "./Write"
+import Account from "./Account"
 
 const Dapp = () => {
   return (
@@ -22,8 +22,8 @@ const Dapp = () => {
           <Route exact path="/read">
             <Read />
           </Route>
-          <Route exact path="/transact">
-            <Transact />
+          <Route exact path="/account">
+            <Account />
           </Route>
         </Switch>
       </Box>

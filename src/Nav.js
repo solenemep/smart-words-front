@@ -19,11 +19,15 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useWeb3 } from "web3-hooks"
 import { Fragment } from "react"
+import { ethers } from "ethers"
+import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
 
 const Nav = () => {
   const [web3State, login] = useWeb3()
+  const { publishingHouse } = usePublishingHouseContext()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
+  const ADMIN = ethers.utils.id("ADMIN")
 
   return (
     <Box px={4}>
@@ -58,21 +62,25 @@ const Nav = () => {
               >
                 Read
               </Button>
-              <Button
-                as={Link}
-                size={"md"}
-                href={"/transact"}
-                aria-label={"transact page"}
-                _hover={{ textDecoration: "none" }}
-              >
-                Transact
-              </Button>
             </Fragment>
           ) : (
             <Spacer />
           )}
         </HStack>
         <HStack spacing={8}>
+          {web3State.isLogged && web3State.chainId === 42 ? (
+            <Button
+              as={Link}
+              size={"md"}
+              href={"/account"}
+              aria-label={"account page"}
+              _hover={{ textDecoration: "none" }}
+            >
+              Account
+            </Button>
+          ) : (
+            <Spacer />
+          )}
           <Button
             size={"md"}
             type="button"

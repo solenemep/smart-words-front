@@ -3,20 +3,51 @@ import {
   Button,
   Container,
   FormControl,
-  FormLabel,
   Heading,
   Link,
   Textarea,
+  useToast,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { useState } from "react"
 import { useWeb3 } from "web3-hooks"
+import { usePublicationContext } from "./hook/usePublicationContext"
 
 const Write = () => {
   const [web3State] = useWeb3()
+  const { publication } = usePublicationContext()
+  const toast = useToast()
+
+  function stringToBytes32(string) {
+    const hash = ethers.utils.id(string)
+    return hash
+  }
 
   // Content
   const [content, setContent] = useState("")
-  const handlePublishSubmit = () => {}
+  const [isLoadingContent, setIsLoadingContent] = useState(false)
+  const handlePublishClick = async () => {
+    try {
+      setIsLoadingContent(true)
+      const hash = stringToBytes32(content.trim().toLowerCase())
+      const uriId = "1"
+      const tx = await publication.publish(content, hash, uriId)
+      await tx.wait()
+      toast({
+        title: "Publication successfull",
+        description: `You own this publication, please set a price in Account section to be able to sell it.`,
+        variant: "subtle",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      })
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setContent("")
+      setIsLoadingContent(false)
+    }
+  }
 
   return (
     <Container maxW={"container.lg"} py={24}>
@@ -24,10 +55,9 @@ const Write = () => {
         Write
       </Heading>
       {web3State.isLogged && web3State.chainId === 42 ? (
-        <Box as={"form"} onSubmit={handlePublishSubmit}>
+        <Box as={"form"}>
           <FormControl id="content" mb={8}>
             <Textarea
-              isFullWidth
               isRequired
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -36,7 +66,9 @@ const Write = () => {
               rows={12}
             />
           </FormControl>
-          <Button type="submit">Publish</Button>
+          <Button onClick={handlePublishClick} isLoading={isLoadingContent}>
+            Publish
+          </Button>
         </Box>
       ) : (
         <Button
