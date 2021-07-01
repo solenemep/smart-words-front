@@ -1,4 +1,11 @@
-import { Container, Heading, Button, Link, Box } from "@chakra-ui/react"
+import {
+  Container,
+  Heading,
+  Button,
+  Link,
+  Box,
+  useToast,
+} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
 import { publishingHouseAddress } from "../contract/PublishingHouse"
@@ -13,6 +20,7 @@ const Account = () => {
   const { publishingHouse } = usePublishingHouseContext()
   const [res, setRes] = useState([])
   const [isLoadingOwner, setIsLoadingOwner] = useState(false)
+  const toast = useToast()
 
   // Publication by Owner
   useEffect(() => {
@@ -50,7 +58,7 @@ const Account = () => {
       } catch (e) {
         toast({
           title: "Error",
-          description: `${e.error.message}`,
+          description: e.message,
           variant: "subtle",
           status: "error",
           duration: 9000,
@@ -60,7 +68,7 @@ const Account = () => {
         setIsLoadingOwner(false)
       }
     }
-  }, [publication, publishingHouse, web3State])
+  }, [publication, publishingHouse, web3State, toast])
 
   return (
     <Container maxW={"container.lg"} py={24}>

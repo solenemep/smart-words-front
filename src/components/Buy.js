@@ -34,7 +34,7 @@ const Buy = (props) => {
       } else {
         toast({
           title: "Error",
-          description: `${e.error.message}`,
+          description: e.message,
           variant: "subtle",
           status: "error",
           duration: 9000,

@@ -7,6 +7,7 @@ import {
   Input,
   Link,
   SimpleGrid,
+  useToast,
 } from "@chakra-ui/react"
 import { Fragment, useState } from "react"
 import { useWeb3 } from "web3-hooks"
@@ -19,6 +20,7 @@ const Read = () => {
   const [web3State] = useWeb3()
   const { publication } = usePublicationContext()
   const { publishingHouse } = usePublishingHouseContext()
+  const toast = useToast()
 
   const [res, setRes] = useState([])
 
@@ -52,7 +54,7 @@ const Read = () => {
     } catch (e) {
       toast({
         title: "Error",
-        description: `${e.error.message}`,
+        description: e.message,
         variant: "subtle",
         status: "error",
         duration: 9000,
@@ -93,7 +95,7 @@ const Read = () => {
     } catch (e) {
       toast({
         title: "Error",
-        description: `${e.error.message}`,
+        description: e.message,
         variant: "subtle",
         status: "error",
         duration: 9000,

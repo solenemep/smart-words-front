@@ -46,7 +46,7 @@ const Price = (props) => {
       } else {
         toast({
           title: "Error",
-          description: `${e.error.message}`,
+          description: e.message,
           variant: "subtle",
           status: "error",
           duration: 9000,
@@ -86,7 +86,7 @@ const Price = (props) => {
       } else {
         toast({
           title: "Error",
-          description: `${e.error.message}`,
+          description: e.message,
           variant: "subtle",
           status: "error",
           duration: 9000,
