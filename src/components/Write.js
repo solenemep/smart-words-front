@@ -51,6 +51,15 @@ const Write = () => {
           duration: 9000,
           isClosable: true,
         })
+      } else {
+        toast({
+          title: "Error",
+          description: `${e.error.message}`,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
       }
     } finally {
       setContent("")

@@ -31,11 +31,10 @@ const Buy = (props) => {
           duration: 9000,
           isClosable: true,
         })
-      }
-      if (e.code === 32016) {
+      } else {
         toast({
-          title: "Payment is not enought",
-          description: e.message,
+          title: "Error",
+          description: `${e.error.message}`,
           variant: "subtle",
           status: "error",
           duration: 9000,

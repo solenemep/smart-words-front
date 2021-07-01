@@ -50,7 +50,14 @@ const Read = () => {
     try {
       getPublicationByAuthor()
     } catch (e) {
-      console.log(e)
+      toast({
+        title: "Error",
+        description: `${e.error.message}`,
+        variant: "subtle",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
     } finally {
       setAuthor("")
       setIsLoadingAuthor(false)
@@ -84,7 +91,14 @@ const Read = () => {
     try {
       getPublicationById()
     } catch (e) {
-      console.log(e)
+      toast({
+        title: "Error",
+        description: `${e.error.message}`,
+        variant: "subtle",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
     } finally {
       setId(0)
       setIsLoadingId(false)

@@ -1,6 +1,7 @@
 import { Container, Heading, Button, Link, Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
+import { publishingHouseAddress } from "../contract/PublishingHouse"
 import { usePublicationContext } from "../hook/usePublicationContext"
 import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 import Price from "./Price"
@@ -26,6 +27,10 @@ const Account = () => {
           const pub = await publication.getPublicationById(pubId)
           const owner = await publication.ownerOf(pubId)
           const price = await publishingHouse.getPriceById(pubId)
+          const getApprove = await publication.getApproved(pubId)
+          const allowance = getApprove.includes(publishingHouseAddress)
+            ? true
+            : false
           const publi = {
             id: pubId,
             author: pub[0],
@@ -34,6 +39,7 @@ const Account = () => {
             date: new Date(pub[3].toString() * 1000).toUTCString(),
             owner: owner,
             price: Number(price.toString()),
+            allowance: allowance,
           }
           result.push(publi)
         }
@@ -42,7 +48,14 @@ const Account = () => {
       try {
         getPublicationByOwner()
       } catch (e) {
-        console.log(e)
+        toast({
+          title: "Error",
+          description: `${e.error.message}`,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
       } finally {
         setIsLoadingOwner(false)
       }
@@ -67,7 +80,7 @@ const Account = () => {
                     price={pub.price}
                     content={pub.content}
                   />
-                  <Price id={pub.id} />
+                  <Price id={pub.id} allowance={pub.allowance} />
                 </Box>
               )
             })}

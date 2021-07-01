@@ -1,9 +1,19 @@
-import { Button, FormControl, HStack, Input, useToast } from "@chakra-ui/react"
+import {
+  Button,
+  FormControl,
+  HStack,
+  Input,
+  Spacer,
+  useToast,
+} from "@chakra-ui/react"
 import { useState } from "react"
+import { publishingHouseAddress } from "../contract/PublishingHouse"
+import { usePublicationContext } from "../hook/usePublicationContext"
 import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 
 const Price = (props) => {
-  const { id } = props
+  const { id, allowance } = props
+  const { publication } = usePublicationContext()
   const { publishingHouse } = usePublishingHouseContext()
   const toast = useToast()
 
@@ -33,15 +43,72 @@ const Price = (props) => {
           duration: 9000,
           isClosable: true,
         })
+      } else {
+        toast({
+          title: "Error",
+          description: `${e.error.message}`,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
       }
     } finally {
       setIsLoadingValue(false)
     }
   }
 
+  // Approve
+  const [isLoadingApprove, setIsLoadingApprove] = useState(false)
+  const handleApproveClick = async () => {
+    try {
+      setIsLoadingApprove(true)
+      const tx = await publication.approve(publishingHouseAddress, id)
+      await tx.wait()
+      toast({
+        title: "Approve successfull",
+        description: `This token can be sold`,
+        variant: "subtle",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      })
+    } catch (e) {
+      if (e.code === 4001) {
+        toast({
+          title: "Transaction signature denied",
+          description: e.message,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: `${e.error.message}`,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
+      }
+    } finally {
+      setIsLoadingApprove(false)
+    }
+  }
+
   return (
-    <HStack alignItems={"center"}>
-      <FormControl id="price">
+    <HStack alignItems={"center"} justifyContent={"space-between"}>
+      <Button
+        onClick={handleApproveClick}
+        isLoading={isLoadingApprove}
+        disabled={allowance}
+      >
+        Approve Selling
+      </Button>
+      <Spacer />
+      <FormControl id="price" width={"20%"}>
         <Input
           type="number"
           placeholder="price value"
@@ -50,7 +117,7 @@ const Price = (props) => {
         />
       </FormControl>
       <Button onClick={handlePriceClick} isLoading={isLoadingValue}>
-        SetPrice
+        Set Price
       </Button>
     </HStack>
   )

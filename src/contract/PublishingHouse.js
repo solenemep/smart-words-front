@@ -1,5 +1,5 @@
 export const publishingHouseAddress =
-  "0x873Ac8F29871897c4E3B4CF9461A16F700526d44"
+  "0xd62a9D6cA585E0c1583Ba94374773967a7EDC5A7"
 export const publishingHouseABI = [
   {
     inputs: [

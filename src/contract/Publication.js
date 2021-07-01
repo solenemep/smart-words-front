@@ -1,4 +1,4 @@
-export const publicationAddress = "0x957935Bf4C9c1CAe0Fed773cB7e0147B636229fc"
+export const publicationAddress = "0x6e2f8f6Df2Fc7E7b2A7419Ac6F140113bcf7366B"
 export const publicationABI = [
   {
     inputs: [],
