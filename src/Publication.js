@@ -1,33 +1,24 @@
-import { Box, Button, Divider, HStack, Text, VStack } from "@chakra-ui/react"
-import { useWeb3 } from "web3-hooks"
-import { usePublicationContext } from "./hook/usePublicationContext"
-import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
+import { Divider, HStack, Text, VStack } from "@chakra-ui/react"
+import { Fragment } from "react"
 
 const Publication = (props) => {
-  const { id, author, date, content } = props
-  const [web3State] = useWeb3()
-  const { publication } = usePublicationContext()
-  const { publishingHouse } = usePublishingHouseContext()
+  const { author, date, price, content } = props
+
   return (
-    <Box mb={8} p={4} shadow={"xs"} rounded={"lg"}>
+    <Fragment>
       <HStack justifyContent={"space-between"} mb={4}>
         <VStack alignItems={"start"}>
           <Text>{author}</Text>
           <Text>{date}</Text>
         </VStack>
-        <HStack>
-          <Text> ETH</Text>
-          {web3State.account === publication.ownerOf(id) ? (
-            <Button>Set Price</Button>
-          ) : (
-            <Button>Buy</Button>
-          )}
-        </HStack>
+        <Text fontWeight={"bold"}>
+          {price === 0 ? "Not for sale" : `${price} ETH`}
+        </Text>
       </HStack>
       <Divider orientation="horizontal" mb={4} />
-
-      <Text>{content}</Text>
-    </Box>
+      <Text mb={4}>{content}</Text>
+      <Divider orientation="horizontal" mb={4} />
+    </Fragment>
   )
 }
 export default Publication

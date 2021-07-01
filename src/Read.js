@@ -9,36 +9,47 @@ import {
   SimpleGrid,
   Text,
 } from "@chakra-ui/react"
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
+import Buy from "./Buy"
 import { usePublicationContext } from "./hook/usePublicationContext"
+import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
 import Publication from "./Publication"
 
 const Read = () => {
   const [web3State] = useWeb3()
   const { publication } = usePublicationContext()
+  const { publishingHouse } = usePublishingHouseContext()
 
   const [res, setRes] = useState([])
 
   // Publication by Author
   const [author, setAuthor] = useState("")
   const [isLoadingAuthor, setIsLoadingAuthor] = useState(false)
+  const getPublicationByAuthor = async () => {
+    setIsLoadingAuthor(true)
+    const result = []
+    const pubIds = await publication.getIdByAuthor(author)
+    for (let i = 0; i < pubIds.length; i++) {
+      const pub = await publication.getPublicationById(pubIds[i].toString())
+      const owner = await publication.ownerOf(pubIds[i])
+      const price = await publishingHouse.getPriceById(pubIds[i])
+      const publi = {
+        id: pubIds[i].toString(),
+        author: pub[0],
+        content: pub[1],
+        hash: pub[2],
+        date: new Date(pub[3].toString() * 1000).toUTCString(),
+        owner: owner,
+        price: Number(price.toString()),
+      }
+      result.push(publi)
+    }
+    setRes(result)
+  }
   const handleAuthorClick = async () => {
     try {
-      setRes([])
-      setIsLoadingAuthor(true)
-      const pubIds = await publication.getIdByAuthor(author)
-      for (let i = 0; i < pubIds.length; i++) {
-        const pub = await publication.getPublicationById(pubIds[i].toString())
-        const publi = {
-          id: pubIds[i].toString(),
-          author: pub[0],
-          content: pub[1],
-          hash: pub[2],
-          date: new Date(pub[3].toString() * 1000).toUTCString(),
-        }
-        setRes([...res, publi])
-      }
+      getPublicationByAuthor()
     } catch (e) {
       console.log(e)
     } finally {
@@ -47,84 +58,37 @@ const Read = () => {
     }
   }
 
-  // Publication by Owner
-  const [owner, setOwner] = useState("")
-  const [isLoadingOwner, setIsLoadingOwner] = useState(false)
-  const handleOwnerClick = async () => {
-    try {
-      setRes([])
-      setIsLoadingOwner(true)
-      const balanceOf = await publication.balanceOf(owner)
-      for (let index = 0; index < balanceOf; index++) {
-        const pubId = await publication.tokenOfOwnerByIndex(owner, index)
-        const pub = await publication.getPublicationById(pubId)
-        const publi = {
-          id: index,
-          author: pub[0],
-          content: pub[1],
-          hash: pub[2],
-          date: new Date(pub[3].toString() * 1000).toUTCString(),
-        }
-        setRes([...res, publi])
-      }
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setOwner("")
-      setIsLoadingOwner(false)
-    }
-  }
-
   // Publication by Id
   const [id, setId] = useState(0)
   const [isLoadingId, setIsLoadingId] = useState(false)
+  const getPublicationById = async () => {
+    setIsLoadingId(true)
+    const result = []
+    const pub = await publication.getPublicationById(id)
+    const owner = await publication.ownerOf(id)
+    const price = await publishingHouse.getPriceById(id)
+    if (pub[0] !== "0x0000000000000000000000000000000000000000") {
+      const publi = {
+        id: id,
+        author: pub[0],
+        content: pub[1],
+        hash: pub[2],
+        date: new Date(pub[3].toString() * 1000).toUTCString(),
+        owner: owner,
+        price: Number(price.toString()),
+      }
+      result.push(publi)
+    }
+    setRes(result)
+  }
   const handleIdClick = async () => {
     try {
-      setRes([])
-      setIsLoadingId(true)
-      const pub = await publication.getPublicationById(id)
-      if (pub[0] !== "0x0000000000000000000000000000000000000000") {
-        const publi = {
-          id: id,
-          author: pub[0],
-          content: pub[1],
-          hash: pub[2],
-          date: new Date(pub[3].toString() * 1000).toUTCString(),
-        }
-        setRes([...res, publi])
-      }
+      getPublicationById()
     } catch (e) {
       console.log(e)
     } finally {
       setId(0)
       setIsLoadingId(false)
-    }
-  }
-
-  // Publication by Hash
-  const [hash, setHash] = useState("")
-  const [isLoadingHash, setIsLoadingHash] = useState(false)
-  const handleHashClick = async () => {
-    try {
-      setRes([])
-      setIsLoadingHash(true)
-      const idPub = await publication.getIdByHash(hash)
-      const pub = await publication.getPublicationById(idPub)
-      if (pub[0] !== "0x0000000000000000000000000000000000000000") {
-        const publi = {
-          id: idPub,
-          author: pub[0],
-          content: pub[1],
-          hash: pub[2],
-          date: new Date(pub[3].toString() * 1000).toUTCString(),
-        }
-        setRes([...res, publi])
-      }
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setHash("")
-      setIsLoadingHash(false)
     }
   }
 
@@ -154,23 +118,6 @@ const Read = () => {
               </Button>
             </Box>
             <Box as={"form"}>
-              <FormControl id="owner" mb={4}>
-                <Input
-                  type="text"
-                  placeholder="owner address"
-                  value={owner}
-                  onChange={(e) => setOwner(e.target.value)}
-                />
-              </FormControl>
-              <Button
-                onClick={handleOwnerClick}
-                isLoading={isLoadingOwner}
-                isFullWidth
-              >
-                Get Publication by Owner
-              </Button>
-            </Box>
-            <Box as={"form"}>
               <FormControl id="id" mb={4}>
                 <Input
                   type="number"
@@ -187,39 +134,22 @@ const Read = () => {
                 Get Publication by Id
               </Button>
             </Box>
-            <Box as={"form"}>
-              <FormControl id="hash" mb={4}>
-                <Input
-                  type="text"
-                  placeholder="publication hash"
-                  value={hash}
-                  onChange={(e) => setHash(e.target.value)}
-                />
-              </FormControl>
-              <Button
-                onClick={handleHashClick}
-                isLoading={isLoadingHash}
-                isFullWidth
-              >
-                Get Publication by Hash
-              </Button>
-            </Box>
           </SimpleGrid>
 
-          {res.length !== 0 &&
-            !isLoadingAuthor &&
-            !isLoadingOwner &&
+          {!isLoadingAuthor &&
             !isLoadingId &&
-            !isLoadingHash &&
+            res.length !== 0 &&
             res.map((pub) => {
               return (
-                <Publication
-                  key={pub.id}
-                  id={pub.id}
-                  author={pub.author}
-                  date={pub.date}
-                  content={pub.content}
-                />
+                <Box key={pub.id} mb={8} p={4} shadow={"xs"} rounded={"lg"}>
+                  <Publication
+                    author={pub.author}
+                    date={pub.date}
+                    price={pub.price}
+                    content={pub.content}
+                  />
+                  <Buy id={pub.id} price={pub.price} />
+                </Box>
               )
             })}
         </Fragment>

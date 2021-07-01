@@ -42,7 +42,16 @@ const Write = () => {
         isClosable: true,
       })
     } catch (e) {
-      console.log(e)
+      if (e.code === 4001) {
+        toast({
+          title: "Transaction signature denied",
+          description: e.message,
+          variant: "subtle",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        })
+      }
     } finally {
       setContent("")
       setIsLoadingContent(false)

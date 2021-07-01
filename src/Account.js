@@ -2,41 +2,51 @@ import { Container, Heading, Button, Link, Text, Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
 import { usePublicationContext } from "./hook/usePublicationContext"
+import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
+import Price from "./Price"
 import Publication from "./Publication"
 
 const Account = () => {
   const [web3State] = useWeb3()
   const { publication } = usePublicationContext()
+  const { publishingHouse } = usePublishingHouseContext()
   const [res, setRes] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingOwner, setIsLoadingOwner] = useState(false)
+
+  // Publication by Owner
+  const getPublicationByOwner = async () => {
+    setIsLoadingOwner(true)
+    const result = []
+    const account = await web3State.account
+    const balanceOf = await publication.balanceOf(account)
+    for (let index = 0; index < balanceOf; index++) {
+      const pubId = await publication.tokenOfOwnerByIndex(account, index)
+      const pub = await publication.getPublicationById(pubId)
+      const owner = await publication.ownerOf(pubId)
+      const price = await publishingHouse.getPriceById(pubId)
+      const publi = {
+        id: pubId,
+        author: pub[0],
+        content: pub[1],
+        hash: pub[2],
+        date: new Date(pub[3].toString() * 1000).toUTCString(),
+        owner: owner,
+        price: Number(price.toString()),
+      }
+      result.push(publi)
+    }
+    setRes(result)
+  }
 
   useEffect(() => {
     if (publication) {
-      const getPublicationByOwner = async () => {
-        try {
-          setRes([])
-          setIsLoading(true)
-          const account = await web3State.account
-          const balanceOf = await publication.balanceOf(account)
-          for (let index = 0; index < balanceOf; index++) {
-            const pubId = await publication.tokenOfOwnerByIndex(account, index)
-            const pub = await publication.getPublicationById(pubId)
-            const publi = {
-              id: index,
-              author: pub[0],
-              content: pub[1],
-              hash: pub[2],
-              date: new Date(pub[3].toString() * 1000).toUTCString(),
-            }
-            setRes([...res, publi])
-          }
-        } catch (e) {
-          console.log(e)
-        } finally {
-          setIsLoading(false)
-        }
+      try {
+        getPublicationByOwner()
+      } catch (e) {
+        console.log(e)
+      } finally {
+        setIsLoadingOwner(false)
       }
-      getPublicationByOwner()
     }
   }, [publication])
 
@@ -47,17 +57,19 @@ const Account = () => {
       </Heading>
       {web3State.isLogged && web3State.chainId === 42 ? (
         <Box>
-          {res.length !== 0 &&
-            !isLoading &&
+          {!isLoadingOwner &&
+            res.length !== 0 &&
             res.map((pub) => {
               return (
-                <Publication
-                  key={pub.id}
-                  id={pub.id}
-                  author={pub.author}
-                  date={pub.date}
-                  content={pub.content}
-                />
+                <Box key={pub.id} mb={8} p={4} shadow={"xs"} rounded={"lg"}>
+                  <Publication
+                    author={pub.author}
+                    date={pub.date}
+                    price={pub.price}
+                    content={pub.content}
+                  />
+                  <Price id={pub.id} />
+                </Box>
               )
             })}
         </Box>
