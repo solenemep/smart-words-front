@@ -7,9 +7,8 @@ import {
   Input,
   Link,
   SimpleGrid,
-  Text,
 } from "@chakra-ui/react"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useState } from "react"
 import { useWeb3 } from "web3-hooks"
 import Buy from "./Buy"
 import { usePublicationContext } from "./hook/usePublicationContext"

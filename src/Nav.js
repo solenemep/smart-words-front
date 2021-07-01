@@ -19,15 +19,11 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useWeb3 } from "web3-hooks"
 import { Fragment } from "react"
-import { ethers } from "ethers"
-import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
 
 const Nav = () => {
   const [web3State, login] = useWeb3()
-  const { publishingHouse } = usePublishingHouseContext()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
-  const ADMIN = ethers.utils.id("ADMIN")
 
   return (
     <Box px={4}>
