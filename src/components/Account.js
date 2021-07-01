@@ -1,8 +1,8 @@
 import { Container, Heading, Button, Link, Box } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
-import { usePublicationContext } from "./hook/usePublicationContext"
-import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
+import { usePublicationContext } from "../hook/usePublicationContext"
+import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 import Price from "./Price"
 import Publication from "./Publication"
 

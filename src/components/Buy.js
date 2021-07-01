@@ -1,6 +1,6 @@
 import { Button, HStack, Spacer, useToast } from "@chakra-ui/react"
 import { useState } from "react"
-import { usePublishingHouseContext } from "./hook/usePublishingHouseContext"
+import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 
 const Buy = (props) => {
   const { price, id } = props

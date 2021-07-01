@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import Read from "./Read"
-import Footer from "./Footer"
-import Home from "./Home"
-import Nav from "./Nav"
-import Write from "./Write"
-import Account from "./Account"
+import Read from "./components/Read"
+import Footer from "./components/Footer"
+import Home from "./components/Home"
+import Nav from "./components/Nav"
+import Write from "./components/Write"
+import Account from "./components/Account"
 
 const Dapp = () => {
   return (

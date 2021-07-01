@@ -11,7 +11,7 @@ import {
 import { ethers } from "ethers"
 import { useState } from "react"
 import { useWeb3 } from "web3-hooks"
-import { usePublicationContext } from "./hook/usePublicationContext"
+import { usePublicationContext } from "../hook/usePublicationContext"
 
 const Write = () => {
   const [web3State] = useWeb3()
