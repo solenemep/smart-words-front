@@ -5,7 +5,9 @@ import {
   Link,
   Box,
   useToast,
+  Text,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 import { useWeb3 } from "web3-hooks"
 import { publishingHouseAddress } from "../contract/PublishingHouse"
@@ -46,7 +48,7 @@ const Account = () => {
             hash: pub[2],
             date: new Date(pub[3].toString() * 1000).toUTCString(),
             owner: owner,
-            price: Number(price.toString()),
+            price: ethers.utils.formatEther(price),
             allowance: allowance,
           }
           result.push(publi)
@@ -75,6 +77,10 @@ const Account = () => {
       <Heading as={"h2"} size="2xl" mb={16} textAlign={"center"}>
         Your publications
       </Heading>
+      <Text mb={16} style={{ textTransform: "uppercase" }}>
+        Approve selling and set price of your publications. To unput it on sale,
+        just set price to zero.
+      </Text>
       {web3State.isLogged && web3State.chainId === 42 ? (
         <Box>
           {!isLoadingOwner &&

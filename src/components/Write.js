@@ -5,6 +5,7 @@ import {
   FormControl,
   Heading,
   Link,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react"
@@ -72,6 +73,10 @@ const Write = () => {
       <Heading as={"h2"} size="2xl" mb={16} textAlign={"center"}>
         Write
       </Heading>
+      <Text mb={16} style={{ textTransform: "uppercase" }}>
+        Type your text and publish it. If the text already exists you will not
+        be able to publish.
+      </Text>
       {web3State.isLogged && web3State.chainId === 42 ? (
         <Box as={"form"}>
           <FormControl id="content" mb={8}>

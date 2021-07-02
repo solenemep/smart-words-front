@@ -1,4 +1,5 @@
 import { Button, HStack, Spacer, useToast } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { useState } from "react"
 import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 
@@ -11,7 +12,9 @@ const Buy = (props) => {
   const handleBuyClick = async () => {
     try {
       setIsLoadingBuy(true)
-      const tx = await publishingHouse.buy(id)
+      const tx = await publishingHouse.buy(id, {
+        value: ethers.utils.parseEther(price),
+      })
       await tx.wait()
       toast({
         title: "Purchase successfull",
@@ -51,7 +54,7 @@ const Buy = (props) => {
       <Button
         onClick={handleBuyClick}
         isLoading={isLoadingBuy}
-        disabled={price === 0}
+        disabled={price === ethers.utils.formatEther(0)}
       >
         Buy
       </Button>

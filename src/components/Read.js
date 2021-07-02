@@ -7,6 +7,7 @@ import {
   Input,
   Link,
   SimpleGrid,
+  Text,
   useToast,
 } from "@chakra-ui/react"
 import { Fragment, useState } from "react"
@@ -15,6 +16,7 @@ import Buy from "./Buy"
 import { usePublicationContext } from "../hook/usePublicationContext"
 import { usePublishingHouseContext } from "../hook/usePublishingHouseContext"
 import Publication from "./Publication"
+import { ethers } from "ethers"
 
 const Read = () => {
   const [web3State] = useWeb3()
@@ -42,7 +44,7 @@ const Read = () => {
         hash: pub[2],
         date: new Date(pub[3].toString() * 1000).toUTCString(),
         owner: owner,
-        price: Number(price.toString()),
+        price: ethers.utils.formatEther(price),
       }
       result.push(publi)
     }
@@ -83,7 +85,7 @@ const Read = () => {
         hash: pub[2],
         date: new Date(pub[3].toString() * 1000).toUTCString(),
         owner: owner,
-        price: Number(price.toString()),
+        price: ethers.utils.formatEther(price),
       }
       result.push(publi)
     }
@@ -112,6 +114,9 @@ const Read = () => {
       <Heading as={"h2"} size="2xl" mb={16} textAlign={"center"}>
         Read
       </Heading>
+      <Text mb={16} style={{ textTransform: "uppercase" }}>
+        Search for publications you want to read or buy.
+      </Text>
       {web3State.isLogged && web3State.chainId === 42 ? (
         <Fragment>
           <SimpleGrid columns={2} spacing={8} mb={16}>

@@ -6,6 +6,7 @@ import {
   Spacer,
   useToast,
 } from "@chakra-ui/react"
+import { ethers } from "ethers"
 import { useState } from "react"
 import { publishingHouseAddress } from "../contract/PublishingHouse"
 import { usePublicationContext } from "../hook/usePublicationContext"
@@ -23,7 +24,10 @@ const Price = (props) => {
   const handlePriceClick = async () => {
     try {
       setIsLoadingValue(true)
-      const tx = await publishingHouse.setPrice(id, value)
+      const tx = await publishingHouse.setPrice(
+        id,
+        ethers.utils.parseEther(value.toString())
+      )
       await tx.wait()
       toast({
         title: "Price change successfull",
